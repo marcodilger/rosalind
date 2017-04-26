@@ -18,25 +18,27 @@
 # 
 
 
-
 dna <- paste0(readLines("data/rosalind_kmp.txt")[-1], collapse="")
 
+
+start <- Sys.time()
 p <- rep(0,nchar(dna)) # p[1] = 0 by definition
 
-lapply(2:length(p), function(k) {
-
-seq <- seq(k, by = -1, length.out=p[k-1] + 1)
-
-sapply(seq, function(j) {
-  substring <- substr(dna, j, k)
-  prefix <- substr(dna, 1, k-j+1)
-  if (substring == prefix) {
-    p[k] <<- nchar(substring)
-    }  
-  }
-  )
+sapply(2:length(p), function(k) {
+  sapply(seq(k, by = -1, length.out=p[k-1] + 1), function(j) {
+    substring <- substr(dna, j, k)
+    prefix <- substr(dna, 1, k-j+1)
+    if (substring == prefix) {
+      p[k] <<- nchar(substring)
+      }  
+    }
+    )
 }
 )
 
+print(Sys.time()-start)
+
 # writeClipboard(p) #too big
 write.table(t(p),"kmp_out.txt",col.names = FALSE, row.names = FALSE)
+
+
